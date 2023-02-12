@@ -1,11 +1,13 @@
-import { Container, Grid, TextField, Box } from "@mui/material"
+import { Container, Box } from "@mui/material"
 import React from "react"
-import Quote from "../components/Quote";
 import { api } from "../lib/Api"
+import SearchField from "../components/SearchField";
+import SearchResults from "../components/SearchResults";
+import { debounce } from "lodash";
 
 export default class Quotes extends React.Component {
 
-  state = {quotes: [], results: []};
+  state = {quotes: [], results: [], search: ""};
 
   async componentDidMount() {
     const quotes = await api.getQuotes();
@@ -13,11 +15,15 @@ export default class Quotes extends React.Component {
   }
 
   search(event) {
+    const search = event.target.value;
+    let results = this.state.quotes;
+    if (search.length > 1) {
+      results = this.state.quotes.filter(quote => {
+        return quote.content.includes(search)
+      })
+    }
     this.setState({
-      quotes: this.state.quotes,
-      results: this.state.quotes.filter(quote => {
-        return quote.content.includes(event.target.value)
-      }),
+      ...this.state, results, search,
     });
   }
 
@@ -26,19 +32,9 @@ export default class Quotes extends React.Component {
       <Container>
         <h1>Citations</h1>
         <Box sx={{marginBottom: "16px"}}>
-          <TextField id="search" label="Rechercher dans les citations" variant="outlined" onChange={(e) => this.search(e)} />
+          <SearchField value={this.state.search} onChange={(e) => this.search(e)} />
         </Box>
-        <Grid container spacing={2}>
-          {
-            this.state.results.map(quote => {
-              return (
-                <Grid item xs={4} key={quote.id}>
-                  <Quote quote={quote} />
-                </Grid>
-              )
-            })
-          }
-        </Grid>
+        <SearchResults results={this.state.results} search={this.state.search} />
       </Container>
     );
   }
