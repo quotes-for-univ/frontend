@@ -18,7 +18,7 @@ class Api {
     return await this.get("/authors?_embed=quotes");
   }
 
-  async createAuthors(content, authorId) {
+  async createQuote(content, authorId) {
     return await this.post("/quotes", { content, authorId })
   }
 
@@ -27,13 +27,11 @@ class Api {
   }
 
   async post(url, body) {
-    return (await axios({
-      method: 'post',
-      url, body,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    }))
+    const headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    };
+    return (await axios.post(`${this.baseUri}${url}`, body, headers));
   }
 
 }
