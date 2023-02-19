@@ -1,35 +1,29 @@
+import { Container, Grid, TextField } from "@mui/material";
 import React from "react";
+import AuthorsSelector from "../components/AuthorsSelector";
 import { api } from "../lib/Api"
 
 export default class CreateQuote extends React.Component {
   state = {content: "", authorId: 1, authors: [], confirmation: false};
 
-  async componentDidMount() {
-    const authors = await api.getAuthors();
-    console.log(authors);
-    this.setState({...this.state, authors });
-  }
   render() {
-    const list = (
-      <select value={this.state.authorId} onChange={e => this.updateAuthor(e)}>
-        {
-          this.state.authors.map(author => {
-            return (
-              <option value={author.id}>{author.name}</option>
-            )
-          })
-        }
-      </select>
-    );
     return (
       <div>
         {
           this.state.confirmation ? <div>Création confirmée <a href="/quotes">Retour à la liste</a></div> : ""
         }
         <form onSubmit={e => this.submit(e)}>
-          <textarea value={this.state.content} onChange={e => this.updateContent(e)}></textarea>
-          {list}
-          <button type="submit">Créer</button>
+          <Container>
+            <div>
+              <TextField  value={this.state.content} onChange={e => this.updateContent(e)} variant="outlined" />
+            </div>
+            <div>
+              <AuthorsSelector value={this.state.authorId} onChange={e => this.updateAuthor(e)} />
+            </div>
+            <div>
+              <button type="submit">Créer</button>
+            </div>
+          </Container>
         </form>
       </div>
     )
