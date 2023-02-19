@@ -2,6 +2,7 @@ import { Container, Grid, TextField } from "@mui/material";
 import React from "react";
 import AuthorsSelector from "../components/AuthorsSelector";
 import { api } from "../lib/Api"
+import { Navigate } from "react-router-dom"
 
 export default class CreateQuote extends React.Component {
   state = {content: "", authorId: 1, authors: [], confirmation: false};
@@ -9,9 +10,7 @@ export default class CreateQuote extends React.Component {
   render() {
     return (
       <div>
-        {
-          this.state.confirmation ? <div>Création confirmée <a href="/quotes">Retour à la liste</a></div> : ""
-        }
+        {this.state.confirmation && <Navigate replace to="/quotes" />}
         <form onSubmit={e => this.submit(e)}>
           <Container>
             <div>
